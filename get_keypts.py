@@ -4,7 +4,7 @@ import re
 
 import numpy as np
 
-URL = 'http://0.0.0.0:5000/getkeypts'
+URL = 'http://localhost:5000/getkeypts'
 
 
 def get_keypts(image_url, method='docker'):
