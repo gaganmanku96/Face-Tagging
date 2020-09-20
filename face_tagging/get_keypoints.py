@@ -7,7 +7,7 @@ import numpy as np
 URL = 'http://localhost:5000/getkeypts'
 
 
-def get_keypts(image_url, method='docker'):
+def get_keypts(image_url, method='docker', silent):
     if method == 'docker':
         f = {'file': open(image_url, 'rb').read()}
         result = requests.post(URL, files=f)
@@ -19,5 +19,7 @@ def get_keypts(image_url, method='docker'):
             except:
                 return None
         else:
-            print(result.text)
+            print(silent)
+            # if not silent: 
+            #     print(result.text)
             return None

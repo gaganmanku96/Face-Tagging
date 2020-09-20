@@ -8,38 +8,38 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import LeaveOneOut
 from tqdm import tqdm
 
-from get_keypoints import get_keypts
-from visualization import visualize
+from face_tagging.get_keypoints import get_keypts
+from face_tagging.visualization import visualize
 
 
-class FaceTagging:
+class FaceTaggingModel:
     def __init__(self, train_images_path="assets/train_images") -> NoReturn:
-        self.train_images_path = train_images_path
-        self.images_to_keypoints = dict()
-        self.groupedClasses = None
+        self._train_images_path = train_images_path
+        self._images_to_keypoints = dict()
+        self._groupedClasses = None
     
     def _prepare_data(self):
-        images = os.listdir(self.train_images_path)
+        images = os.listdir(self._train_images_path)
         if images == []:
             raise TypeError("Images folder is empty")
 
         for image in images:
             # if str(image.split('.')['-1'] not in ['jpg', 'png', 'jpeg']:
             #     continue
-            url = os.path.join(self.train_images_path, image)
-            result = get_keypts(url)
+            url = os.path.join(self._train_images_path, image)
+            result = get_keypts(url, self.silent)
             if result is not None:
-                self.images_to_keypoints[image] = result
+                self._images_to_keypoints[image] = result
     
     def _get_dataframe(self) -> pd.DataFrame:
         self._prepare_data()
-        df = pd.DataFrame.from_dict(self.images_to_keypoints)
+        df = pd.DataFrame.from_dict(self._images_to_keypoints)
         df = df.transpose()
         return df
 
     def train_model(self, silent: bool = False) -> Dict:
+        self.silent = silent
         df = self._get_dataframe()
-
         kf_loo = LeaveOneOut()
 
         knn = KNeighborsClassifier(n_neighbors=1, algorithm='ball_tree', weights='distance')
@@ -106,17 +106,17 @@ class FaceTagging:
                     print(f"Prediction Image = {similarLabels[i]}, Distance(s) = {similarDistances[i]}")
                 # Keep track of predicted similar images so as to not train on them again
                 matchedImages.add(similarLabels[i])
-        self.groupedClasses = groupedClasses
+        self._groupedClasses = groupedClasses
 
         # knn_full = KNeighborsClassifier(n_neighbors=classNum, algorithm='ball_tree', weights='distance')
         # knn_full.fit(df, new_labels)
         
         print("Trained")
 
-    def matched_groups(self):
-        if self.groupedClasses is None:
+    def matched_groups(self) -> Dict:
+        if self._groupedClasses is None:
             raise AttributeError("Model not trained")
-        return self.groupedClasses
+        return self._groupedClasses
 
 
 if __name__ == "__main__":
