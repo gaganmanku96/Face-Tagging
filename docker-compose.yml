@@ -1,7 +1,7 @@
 version: "3"
 services:
     face_embedding_api:
-        build: ./face_landmarks_api
+        image: gaganmanku96/facial_landmarks_api:latest
         command: "python app.py"
         ports:
             - "5000:5000"
