@@ -1,11 +1,8 @@
-import io
-import base64
 import logging
 
 import dlib
 import cv2
-import numpy as np
-from PIL import Image
+
 
 face_detector = dlib.get_frontal_face_detector()
 
@@ -15,33 +12,6 @@ pose_predictor = dlib.shape_predictor(predictor_model)
 face_recognition_model = 'models/dlib_face_recognition_resnet_model_v1.dat'
 face_encoder = dlib.face_recognition_model_v1(face_recognition_model)
 
-
-# def load_image_file(image_path: str, mode='RGB'):
-#     """
-#     Loads an image file (.jpg, .png, etc) into a numpy array
-
-#     :param filename: image file to loady
-#     :param mode: format to convert the image to. Only 'RGB' (8-bit RGB, 3 channels) and 'L' (black and white) are supported.
-#     :return: image contents as numpy array
-#     """
-#     # buff = io.BytesIO(base64.b64decode(base64_image))
-#     # img = np.array(Image.open(buff))
-
-#     img = np.array(Image.open(image_path))
-
-#     # If very large size image, Resize the image
-#     if img.shape[0] > 800:
-#         baseheight = 500
-#         w = (baseheight / img.shape[0])
-#         p = int(img.shape[1] * w)
-#         img = cv2.resize(img, (baseheight, p))
-#     elif img.shape[1] > 800:
-#         baseheight = 500
-#         w = (baseheight / img.shape[1])
-#         p = int(img.shape[0] * w)
-#         img = cv2.resize(img, (p, baseheight))
-
-#     return img
 
 def resize_img(img):
     if img.shape[0] > 800:
