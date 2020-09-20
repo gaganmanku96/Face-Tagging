@@ -3,8 +3,14 @@ import os
 import matplotlib.pyplot as plt
 
 
-def visualize(matched_pairs, images_path):
+def visualize(matched_pairs: dict, images_path: str):
+    """
+    Visualizes all the images using matplotlib
 
+    Args:
+        matched_pairs (dict): A dictionary containing grouped images.
+        images_path (str): The path where images are present
+    """
     if matched_pairs == []:
         raise ValueError("Empty List")
     

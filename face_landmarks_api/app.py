@@ -1,19 +1,26 @@
-from flask import Flask, request, jsonify
+import logging
+
 import numpy as np
 from PIL import Image
+from flask import Flask, request, jsonify
+
 import face_recognizition_api as api
-import logging
+
 
 app = Flask(__name__)
 
 
 @app.route('/getkeypts', methods=['POST'])
 def get_keypts():
+    """
+    Flask application that receives image and return the facial landmark points.
+    """
     try:
         image = request.files['file']
         logging.info("Image recieved")
         image = np.array(Image.open(image))
-        result = api.get_encoding(image, type='image')
+        logging.info(str(type(image)))
+        result = api.get_encoding(image)
         return result
     except Exception:
         return "Something went wrong", 400
