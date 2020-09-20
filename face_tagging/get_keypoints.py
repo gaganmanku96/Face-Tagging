@@ -7,7 +7,7 @@ import numpy as np
 URL = 'http://localhost:5000/getkeypts'
 
 
-def get_keypts(image_url, method='docker', silent):
+def get_keypts(image_url: str, silent: bool, method: str='docker'):
     if method == 'docker':
         f = {'file': open(image_url, 'rb').read()}
         result = requests.post(URL, files=f)
@@ -19,7 +19,8 @@ def get_keypts(image_url, method='docker', silent):
             except:
                 return None
         else:
-            print(silent)
-            # if not silent: 
-            #     print(result.text)
+            if not silent: 
+                print(result.text)
             return None
+    else:
+        raise ValueError("method not valid")

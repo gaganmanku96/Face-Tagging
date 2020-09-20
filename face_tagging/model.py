@@ -13,32 +13,42 @@ from face_tagging.visualization import visualize
 
 
 class FaceTaggingModel:
-    def __init__(self, train_images_path="assets/train_images") -> NoReturn:
-        self._train_images_path = train_images_path
-        self._images_to_keypoints = dict()
+    def __init__(self, keypoints_df: pd.DataFrame=None, train_images_path: str=None, use_docker: bool=False):
+
+        if not use_docker:
+            if keypoints_df is None:
+                raise ValueError("You have to use dataframe is use_docker = False")
+            else:
+                keypoints_df = keypoints_df.set_index('Unnamed: 0')
+
+        self._df = keypoints_df
+        self._silent = False
         self._groupedClasses = None
+        self._user_docker = use_docker
+        self._images_to_keypoints = dict()
+        self._train_images_path = train_images_path
     
     def _prepare_data(self):
         images = os.listdir(self._train_images_path)
         if images == []:
-            raise TypeError("Images folder is empty")
+            raise AttributeError("train_images folder is empty")
 
         for image in images:
-            # if str(image.split('.')['-1'] not in ['jpg', 'png', 'jpeg']:
-            #     continue
+            if image.split('.')[-1] not in ['jpg', 'png', 'jpeg']:
+                continue
             url = os.path.join(self._train_images_path, image)
-            result = get_keypts(url, self.silent)
+            result = get_keypts(url, self._silent)
             if result is not None:
                 self._images_to_keypoints[image] = result
+        self._df = pd.DataFrame.from_dict(self._images_to_keypoints).transpose()
     
     def _get_dataframe(self) -> pd.DataFrame:
-        self._prepare_data()
-        df = pd.DataFrame.from_dict(self._images_to_keypoints)
-        df = df.transpose()
-        return df
+        if self._user_docker:
+            self._prepare_data()
+        return self._df
 
     def train_model(self, silent: bool = False) -> Dict:
-        self.silent = silent
+        self._silent = silent
         df = self._get_dataframe()
         kf_loo = LeaveOneOut()
 

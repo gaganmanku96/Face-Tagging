@@ -23,7 +23,7 @@ You can setup it by using any of the mentioned method
 $ docker pull gaganmanku96/facial_landmarks_api
 $ docker run -p 5000:5000 gaganmanku96/facial_landmarks_api
 ```
-### b) Docker Compose
+#### b) Docker Compose
 ```
 $ docker-compose up
 ```

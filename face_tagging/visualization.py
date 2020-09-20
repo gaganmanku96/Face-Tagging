@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 
 
-def visualize(matched_pairs, images_path="assets/train_images"):
+def visualize(matched_pairs, images_path):
 
     if matched_pairs == []:
         raise ValueError("Empty List")
